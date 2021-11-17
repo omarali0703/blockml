@@ -1,5 +1,5 @@
 import io,sys,os,shutil
-args=sys.args
+args=sys.argv
 run_type = "all"
 project_name="mlflowproject"
 accepted_l1_commands = [
@@ -22,24 +22,13 @@ accepted_l2_commands = [
 
 ]
 
-mlflow_example_projects = "metadata/"
 
-if args[0] not in accepted_l1_commands or args[1] not in accepted_l2_commands:
-	sys.exit(f"command {arg[0]} {arg[1]}  does not exist."
 
-if len(args) > 0:
-	run_type=f"{args[1]}"
-	if len(args) > 1 and run_type=="create":
-		project_name=f"{args[0]}"
-		create_project(project_name)
-else:
-	sys.exit("Please specify a project name")
-
-def create_project(name=project_name,location="",project_type="blank"):
+def create_project(name=project_name,location="", project_type="blank"):
 	print("Creating new MLFlow project...")
 	if location == "":
 		sys.exit('Please specify a location for the project.')
-	if project_type == "" or project_type==None:
+	if project_type == "" or project_type == None:
 		project_type = "blank"
 
 	path = os.path.join(location, name)
@@ -51,6 +40,16 @@ def create_project(name=project_name,location="",project_type="blank"):
 
 	print(f"Project, {name} created at {location}. Visit the github source to get started!")
 
-def __init__():
-	pass
+mlflow_example_projects = "metadata/"
+print (args)
+if len(args) > 1:
+	run_type=f"{args[1]}"
+	if len(args) > 2 and run_type=="create":
+		project_name=f"{args[2]}"
+		location = f"mlflow_projects"
+		create_project(project_name, location, "blank")
+	elif args[2] not in accepted_l1_commands or args[2] not in accepted_l2_commands:
+		sys.exit(f"command {args[1]} {args[2]}  does not exist.")
 
+else:
+	sys.exit("Please specify a project name")
