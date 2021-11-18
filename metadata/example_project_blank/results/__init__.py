@@ -4,3 +4,8 @@ BLOCK_ORDER = ["sub_proccess_a", "sub_proccess_b"]  # The order the subblocks ar
                                                     # Sub-proccesses in this instance can consist of outputting data
                                                     # in a desired format
                                                     # etc.                                                    
+
+
+# Entry point for a block
+def start():
+    pass
