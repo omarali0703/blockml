@@ -32,6 +32,7 @@ def run_project(project_to_run='untitled'):
         project_module = __import__('mlflow_projects.' +
                                     str(project_to_run), fromlist=[''])
 
+		execution_order = project_module.STARTING_BLOCK
         starting_block = project_module.STARTING_BLOCK
         starting_block = __import__('mlflow_projects.' +
                                     str(project_to_run) + '.' + starting_block, fromlist=[''])
