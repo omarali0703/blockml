@@ -9,7 +9,6 @@ project_name = "mlflowproject"
 accepted_l1_commands = [
     "create",
     "run",
-
     "add"
 ]
 accepted_l2_commands = [
@@ -26,17 +25,22 @@ accepted_l2_commands = [
 
 ]
 
+PROJECT_STRUCTURES = {
+    "blank": ['preprocess', 'training', 'run', 'results'],
+    "tagging": ['preprocess', 'tagging', 'training', 'run', 'results']
+}
+
 
 def run_project(project_to_run='untitled'):
     try:
         project_module = __import__('mlflow_projects.' +
                                     str(project_to_run), fromlist=[''])
 
-		execution_order = project_module.STARTING_BLOCK
-        starting_block = project_module.STARTING_BLOCK
-        starting_block = __import__('mlflow_projects.' +
-                                    str(project_to_run) + '.' + starting_block, fromlist=[''])
-        starting_block.start()
+        flow_order = project_module.FLOW_ORDER
+        for block in flow_order:
+            current_block = __import__(
+                'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
+            current_block.start()
     except ModuleNotFoundError as error:
         print(error)
         sys.exit(
@@ -53,7 +57,11 @@ def create_project(name=project_name, location="", project_type="blank"):
     path = os.path.join(location, name)
     print("Cloning blank project template...")
     try:
-        shutil.copytree(f"metadata/example_project_{project_type}", path)
+        shutil.copytree(f"metadata/example_project", path)
+
+        for block in PROJECT_STRUCTURES[project_type]:
+            shutil.copytree(f"metadata/example_block", f"{path}/{block}")
+
     except OSError as error:
         sys.exit(error)
 
@@ -61,17 +69,34 @@ def create_project(name=project_name, location="", project_type="blank"):
         f"Project, {name} created at {location}. Visit the github source to get started!")
 
 
+def create_new_block(project_name=None, name='unamed_block', ):
+    if project_name == None:
+        sys.exit('Please specify a project to create a new block for.')
+    try:
+        shutil.copytree(f"metadata/example_block",
+                        f"mlflow_projects/{project_name}/{name}")
+    except OSError as error:
+        sys.exit(error)
+    print ("Successfully create new block. Make sure to add the block name into the flow order to make sure it is run.")
+
 mlflow_example_projects = "metadata/"
 print(args)
 if len(args) > 1:
     run_type = f"{args[1]}"
     if len(args) > 2:
         project_name = f"{args[2]}"
-
+        location = f"mlflow_projects"
+        project_type = "blank"
         if run_type == "create":
-            location = f"mlflow_projects"
-            create_project(project_name, location, "blank")
-
+            if len(args) > 3:
+                project_type = args[3]
+                if project_type not in PROJECT_STRUCTURES:
+                    sys.exit(
+                        f"Project type: {project_type} is not a valid project type to generate")
+            create_project(project_name, location, project_type)
+        if run_type == "add":
+            new_block_name = args[3]
+            create_new_block(project_name, new_block_name)
         elif run_type == "run":
             project_name = f"{args[2]}"
             run_project(project_name)
