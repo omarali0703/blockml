@@ -36,7 +36,8 @@ def run_project(project_to_run='untitled', block_to_run_from=None):
         project_module = __import__('mlflow_projects.' +
                                     str(project_to_run), fromlist=[''])
         blocks_in_flow = project_module.FLOW_ORDER
-        if block_to_run_from not None and block_to_run_from in blocks_in_flow:
+        if block_to_run_from != None and block_to_run_from in blocks_in_flow:
+            print(f"Running {block_to_run_from} in single-block mode...")
             current_block = __import__(
                 'mlflow_projects.' + str(project_to_run) + '.' + block_to_run_from, fromlist=[''])
             current_block.start()
