@@ -11,14 +11,14 @@ ML flow builder to create and edit ml flows in python. Run custom scripts using 
 >
 ### To create a new project:
 >
-> ```
+> ```bash
 > mlflow.py create [project] [project_type]
 > ```
 >
 #### Example: 
 
 >
-> ```
+> ```bash
 > mlflow.py create My_SVM_Classifier blank
 > ```
 
@@ -30,7 +30,21 @@ ML flow builder to create and edit ml flows in python. Run custom scripts using 
 
 #### Example:
 
-> ```
+> ```bash
 > mlflow.py add [project] [new_block_name]
+> ```
+
+
+
+## Executing your project 
+
+> You may run your project in one of two ways: `run-all` and `single-block` mode. Run-all will run the entire project block-by-block in the order specified in the `__init__.py` file. Single-block mode allows you to run a single block at a time to better debug your model step-by-step.
+### Running the whole project
+> ```bash
+> mlflow.py run [project-name]
+> ```
+### Running a single block
+> ```bash
+> mlflow.py run [project-name] [block-name] [input-data-location]
 > ```
 

@@ -5,5 +5,5 @@ BLOCK_ORDER = ["block_visualiser", ]
 
 
 # Entry point for a block
-def start():
+def start(input_data=None):
     print('Producing results visualisations...')

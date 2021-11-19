@@ -30,24 +30,27 @@ PROJECT_STRUCTURES = {
     "tagging": ['preprocess', 'tagging', 'training', 'run', 'results']
 }
 
-
-def run_project(project_to_run='untitled', block_to_run_from=None):
+# input_data_location is the location of the input data for a single block when running in single block mode.
+def run_project(project_to_run='untitled', block_to_run_from=None, input_data_location=None):
     try:
         project_module = __import__('mlflow_projects.' +
                                     str(project_to_run), fromlist=[''])
         blocks_in_flow = project_module.FLOW_ORDER
         if block_to_run_from != None and block_to_run_from in blocks_in_flow:
+            input_data = None
+            if input_data_location != None:
+                sys.exit("Please specify a location for input data ")
             print(f"Running {block_to_run_from} in single-block mode...")
             current_block = __import__(
                 'mlflow_projects.' + str(project_to_run) + '.' + block_to_run_from, fromlist=[''])
-            current_block.start()
+            current_block.start(input_data=input_data)
         elif block_to_run_from == None:
             input_data = None
             output_data = None
             for block in blocks_in_flow:
                 current_block = __import__(
                     'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
-                output_data = current_block.start(input_data)
+                output_data = current_block.start(input_data=input_data)
                 if output_data == None:
                     sys.exit(f"please make sure that block, {block} has output data returned.")
                 input_data = output_data # Set the next inputdata to the last output

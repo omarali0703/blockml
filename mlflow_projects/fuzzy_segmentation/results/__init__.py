@@ -7,6 +7,6 @@ BLOCK_ORDER = ["sub_proccess_a", "sub_proccess_b"]  # The order the subblocks ar
 
 
 # Entry point for a block
-def start():
+def start(input_data=None):
     print('Results block is running.')
     
