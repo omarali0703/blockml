@@ -31,16 +31,28 @@ PROJECT_STRUCTURES = {
 }
 
 
-def run_project(project_to_run='untitled'):
+def run_project(project_to_run='untitled', block_to_run_from=None):
     try:
         project_module = __import__('mlflow_projects.' +
                                     str(project_to_run), fromlist=[''])
-
-        flow_order = project_module.FLOW_ORDER
-        for block in flow_order:
+        blocks_in_flow = project_module.FLOW_ORDER
+        if block_to_run_from not None and block_to_run_from in blocks_in_flow:
             current_block = __import__(
-                'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
+                'mlflow_projects.' + str(project_to_run) + '.' + block_to_run_from, fromlist=[''])
             current_block.start()
+        elif block_to_run_from == None:
+            input_data = None
+            output_data = None
+            for block in blocks_in_flow:
+                current_block = __import__(
+                    'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
+                output_data = current_block.start(input_data)
+                if output_data == None:
+                    sys.exit(f"please make sure that block, {block} has output data returned.")
+                input_data = output_data # Set the next inputdata to the last output
+        else:
+            sys.exit("Block doesn't exist.")
+            
     except ModuleNotFoundError as error:
         print(error)
         sys.exit(
@@ -99,8 +111,13 @@ if len(args) > 1:
             create_new_block(project_name, new_block_name)
         elif run_type == "run":
             project_name = f"{args[2]}"
-            run_project(project_name)
 
+            if len(args) > 3:
+                block_to_run_from = args[3]
+                run_project(project_name, block_to_run_from)
+            else:
+                run_project(project_name)
+            print('Project finished running.')
     elif args[2] not in accepted_l1_commands or args[2] not in accepted_l2_commands:
         sys.exit(f"command {args[1]} {args[2]}  does not exist.")
 
