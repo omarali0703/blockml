@@ -3,6 +3,7 @@ import sys
 import os
 import shutil
 import mlflow_projects
+
 args = sys.argv
 run_type = "all"
 project_name = "mlflowproject"
@@ -31,15 +32,36 @@ PROJECT_STRUCTURES = {
 }
 
 # input_data_location is the location of the input data for a single block when running in single block mode.
+
+
 def run_project(project_to_run='untitled', block_to_run_from=None, input_data_location=None):
     try:
         project_module = __import__('mlflow_projects.' +
                                     str(project_to_run), fromlist=[''])
         blocks_in_flow = project_module.FLOW_ORDER
+        dependencies_location = project_module.DEPENDENCIES
         if block_to_run_from != None and block_to_run_from in blocks_in_flow:
-            input_data = None
-            if input_data_location != None:
+            if input_data_location == None:
                 sys.exit("Please specify a location for input data ")
+            input_data_dir = f"{dependencies_location}/{input_data_location}"
+            is_dir = os.path.isdir(input_data_dir)
+            if is_dir:
+                batch_input_data = []
+                list_path = os.listdir(input_data_dir)
+                for file in list_path:
+                    input_data_file_name = file.split('.')[0]
+                    input_data_file_data = open(os.path.join(input_data_dir,file),'r')
+                    input_data_file_data = input_data_file_data.read()
+                    batch_input_data.append({file:input_data_file_data})
+                    batch_input_file_data.close()
+                input_data = batch_input_data
+            else:
+                input_data = open(input_data_dir,"r")
+                input_data_file_name = input_data_dir.split('/')[-1].split('.')[0]
+                input_file_data = input_data.read()
+                input_file_data.close()
+                input_data = [{input_data_file_name:input_file_data}]
+                # Array with single element so batch and single input_data's can be processed the same way.
             print(f"Running {block_to_run_from} in single-block mode...")
             current_block = __import__(
                 'mlflow_projects.' + str(project_to_run) + '.' + block_to_run_from, fromlist=[''])
@@ -52,11 +74,11 @@ def run_project(project_to_run='untitled', block_to_run_from=None, input_data_lo
                     'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
                 output_data = current_block.start(input_data=input_data)
                 if output_data == None:
-                    sys.exit(f"please make sure that block, {block} has output data returned.")
-                input_data = output_data # Set the next inputdata to the last output
+                    sys.exit(
+                        f"please make sure that block, {block} has output data returned.")
+                input_data = output_data  # Set the next inputdata to the last output
         else:
             sys.exit("Block doesn't exist.")
-            
     except ModuleNotFoundError as error:
         print(error)
         sys.exit(
@@ -93,7 +115,8 @@ def create_new_block(project_name=None, name='unamed_block', ):
                         f"mlflow_projects/{project_name}/{name}")
     except OSError as error:
         sys.exit(error)
-    print ("Successfully create new block. Make sure to add the block name into the flow order to make sure it is run.")
+    print("Successfully create new block. Make sure to add the block name into the flow order to make sure it is run.")
+
 
 mlflow_example_projects = "metadata/"
 print(args)
@@ -115,7 +138,6 @@ if len(args) > 1:
             create_new_block(project_name, new_block_name)
         elif run_type == "run":
             project_name = f"{args[2]}"
-
             if len(args) > 3:
                 block_to_run_from = args[3]
                 run_project(project_name, block_to_run_from)
