@@ -1,0 +1,10 @@
+[build-system]
+
+requires = [
+    "nltk",
+    "numpy",
+    "spacy",
+    "urllib3"
+]
+
+build-backend = "setuptools.build_meta"
