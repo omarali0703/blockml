@@ -48,3 +48,15 @@ ML flow builder to create and edit ml flows in python. Run custom scripts using 
 > mlflow.py run [project-name] [block-name] [input-data-location]
 > ```
 
+> Single block mode must have a location to either a directory of .json files, or a single .json file.
+>
+> ```python
+> example_data = {
+>  file_name_1:[file-data-1],
+>  file_name_2:[file-data-2],
+>  		...
+>  file_name_n:[file-data-n]
+> }
+> ```
+>
+> 

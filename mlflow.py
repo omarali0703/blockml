@@ -43,24 +43,24 @@ def run_project(project_to_run='untitled', block_to_run_from=None, input_data_lo
         if block_to_run_from != None and block_to_run_from in blocks_in_flow:
             if input_data_location == None:
                 sys.exit("Please specify a location for input data ")
-            input_data_dir = f"{dependencies_location}/{input_data_location}"
+            input_data_dir = f"mlflow_projects/{project_to_run}/{dependencies_location}/{input_data_location}"
             is_dir = os.path.isdir(input_data_dir)
             if is_dir:
-                batch_input_data = []
+                batch_input_data = {}
                 list_path = os.listdir(input_data_dir)
                 for file in list_path:
                     input_data_file_name = file.split('.')[0]
                     input_data_file_data = open(os.path.join(input_data_dir,file),'r')
-                    input_data_file_data = input_data_file_data.read()
-                    batch_input_data.append({file:input_data_file_data})
-                    batch_input_file_data.close()
+                    input_data_contents = input_data_file_data.read()
+                    batch_input_data[file] = input_data_contents
+                    input_data_file_data.close()
                 input_data = batch_input_data
             else:
                 input_data = open(input_data_dir,"r")
                 input_data_file_name = input_data_dir.split('/')[-1].split('.')[0]
                 input_file_data = input_data.read()
-                input_file_data.close()
-                input_data = [{input_data_file_name:input_file_data}]
+                input_data.close()
+                input_data = {input_data_file_name:input_file_data}
                 # Array with single element so batch and single input_data's can be processed the same way.
             print(f"Running {block_to_run_from} in single-block mode...")
             current_block = __import__(
@@ -140,7 +140,8 @@ if len(args) > 1:
             project_name = f"{args[2]}"
             if len(args) > 3:
                 block_to_run_from = args[3]
-                run_project(project_name, block_to_run_from)
+                input_data_location = args[4]
+                run_project(project_name, block_to_run_from, input_data_location)
             else:
                 run_project(project_name)
             print('Project finished running.')
