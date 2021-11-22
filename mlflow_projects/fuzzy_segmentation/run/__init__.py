@@ -9,4 +9,5 @@ POSSIBLE_PATH_MODE = ["block_syntax_parser", "block_dependency_parser"]
 
 # Entry point for a block
 def start(input_data=None, settings={}):
-    print('Run block is running.')
+    print(f"RUNNING.... My input data is\n{input_data}")
+    return 1

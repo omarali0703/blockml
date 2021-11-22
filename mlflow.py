@@ -7,6 +7,8 @@ import configparser
 args = sys.argv
 run_type = "all"
 project_name = "mlflowproject"
+
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -17,6 +19,8 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
+
 accepted_l1_commands = [
     "create",
     "run",
@@ -41,6 +45,8 @@ PROJECT_STRUCTURES = {
     "tagging": ['preprocess', 'tagging', 'training', 'run', 'results']
 }
 # input_data_location is the location of the input data for a single block when running in single block mode.
+
+
 def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=None, input_data_location=None):
     try:
         project_module = __import__('mlflow_projects.' +
@@ -94,11 +100,15 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
             input_data_dir = f"mlflow_projects/{project_to_run}/flows.ini"
             flows_config = configparser.ConfigParser()
             flows_config.read(input_data_dir)
-            flows = flows_config.sections
+            flows = flows_config.sections()
+            print(f"{bcolors.OKCYAN} Flows {flows} initatiated.")
             if flow_to_run not in flows:
-                sys.exit (f"{bcolors.FAIL}Flow to run is not specified in flows.ini")
-            dependencies_location = flows[flow_to_run]['DEPENDENCIES'] if "DEPENDENCIES" in flows[flow_to_run] else dependencies_location
-            block_order = flows[flow_to_run]['BLOCKORDER'].split(',')
+                sys.exit(
+                    f"{bcolors.FAIL}Flow to run is not specified in flows.ini")
+            print(flows_config[flow_to_run])
+            dependencies_location = flows_config[flow_to_run][
+                'DEPENDENCIES'] if "DEPENDENCIES" in flows_config[flow_to_run] else dependencies_location
+            block_order = flows_config[flow_to_run]['BLOCKORDER'].split(',')
             input_data = None
             output_data = None
             for block in block_order:
@@ -106,15 +116,19 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
                 current_block = __import__(
                     'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
                 output_data = current_block.start(input_data=input_data)
+                print(
+                    f"{bcolors.OKGREEN} Data in flow...\nLast inputted data: {input_data}\nLast outputted data: {output_data},")
+                input_data = output_data
+
                 if output_data == None:
                     sys.exit(
-                        f"please make sure that block, {block} has output data returned.")
+                        f"{bcolors.WARNING}please make sure that block, {block} has output data returned.")
                 print(f"{bcolors.OKCYAN} Block, {block} has finished.")
             print(f"{bcolors.OKCYAN} Flow, {flow_to_run} has finished successfully.")
         else:
             sys.exit("Block doesn't exist.")
     except ModuleNotFoundError as error:
-        print(error)
+        print(f"{bcolors.FAIL}{error}")
         sys.exit(
             f"{bcolors.FAIL}Project {project_to_run} Has thrown errors. These are most likely documented above.")
 
@@ -156,12 +170,11 @@ if len(args) > 1:
         project_name = f"{args[2]}"
         location = f"mlflow_projects"
         project_type = "blank"
-        if run_type == "create":
-            if len(args) > 3:
-                project_type = args[3]
-                if project_type not in PROJECT_STRUCTURES:
-                    sys.exit(
-                        f"Project type: {project_type} is not a valid project type to generate")
+        if run_type == "create" and len(args) > 3:
+            project_type = args[3]
+            if project_type not in PROJECT_STRUCTURES:
+                sys.exit(
+                    f"Project type: {project_type} is not a valid project type to generate")
             create_project(project_name, location, project_type)
         elif run_type == "add":
             new_block_name = args[3]
@@ -180,10 +193,12 @@ if len(args) > 1:
             project_name = f"{args[2]}"
             if len(args) > 3:
                 flow_name = args[3]
-                run_project(project_name, block_to_run_from, flow_name, None)
+                run_project(project_name, flow_name, None, None)
             else:
-                sys.exit(f'{bcolors.WARNING}Please specify a flow to run on this project.')
+                sys.exit(
+                    f'{bcolors.WARNING}Please specify a flow to run on this project.')
     elif args[2] not in accepted_l1_commands or args[2] not in accepted_l2_commands:
-        sys.exit(f"{bcolors.WARNING}command {args[1]} {args[2]}  does not exist.")
+        sys.exit(
+            f"{bcolors.WARNING}command {args[1]} {args[2]}  does not exist.")
 else:
     sys.exit(f"{bcolors.WARNING}Please specify a project name")
