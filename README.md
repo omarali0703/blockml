@@ -81,3 +81,17 @@ Single block mode must have a location to either a directory of .json files, or 
 > ```
 >
 > 
+
+
+
+## Flow Creation 🛠
+
+> For more complex flows within your model, you should have a look the `flows.config` file! Flows can be defined by specifying block orders, loops and input settings for each block. You can then run the flow in a far cleaner fashion in the command-line.
+>
+> ```config
+> // flows.config
+> [flow_1]
+> 
+> ```
+>
+> 
