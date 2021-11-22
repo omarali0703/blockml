@@ -82,22 +82,40 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
             input_data = None
             output_data = None
             for block in blocks_in_flow:
+                print(f"{bcolor.OKCYAN} Block, {block} has started...")
                 current_block = __import__(
                     'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
                 output_data = current_block.start(input_data=input_data)
                 if output_data == None:
                     sys.exit(
                         f"please make sure that block, {block} has output data returned.")
+                print(f"{bcolor.OKCYAN} Block, {block} has finished.")
                 input_data = output_data  # Set the next inputdata to the last output
+            print(f"{bcolor.OKCYAN} Model has finished successfully.")
         elif flow_to_run != None:
+            print(f"{bcolor.OKCYAN} Flow, {flow_to_run} has started...")
             input_data_dir = f"mlflow_projects/{project_to_run}/flows.ini"
             flows_config = configparser.ConfigParser()
             flows_config.read(input_data_dir)
             flows = flows_config.sections
             if flow_to_run not in flows:
                 sys.exit (f"{bcolors.FAIL}Flow to run is not specified in flows.ini")
-            for key in flows[flow_to_run]:
-                pass
+            dependencies_location = flows[flow_to_run]['DEPENDENCIES'] if "DEPENDENCIES" in flows[flow_to_run] else dependencies_location
+            block_order = flows[flow_to_run]['BLOCKORDER'].split(',')
+            input_data = None
+            output_data = None
+            for block in block_order:
+                print(f"{bcolor.OKCYAN} Block, {block} has started...")
+                current_block = __import__(
+                    'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
+                output_data = current_block.start(input_data=input_data)
+                if output_data == None:
+                    sys.exit(
+                        f"please make sure that block, {block} has output data returned.")
+                print(f"{bcolor.OKCYAN} Block, {block} has finished.")
+
+            print(f"{bcolor.OKCYAN} Flow, {flow_to_run} has finished successfully.")
+
         else:
             sys.exit("Block doesn't exist.")
     except ModuleNotFoundError as error:
