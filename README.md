@@ -92,7 +92,15 @@ Single block mode must have a location to either a directory of .json files, or 
 >
 > ```ini
 > [flow_1]
+> ; OVERRIDE for dependencies should this particular flow want/need its own set of dependencies that are
+> ; separate from other flows (Preferable for neat and tidy house-keeping)
+> DEPENDENCIES="flow_dependencies"
 > 
+> ; Specify the order that blocks are run (Not including any loops) using a csv-style format.
+> BLOCKORDER = "block-1","block-2","block-3"
+> 
+> ; Specify the output file location for the results of the flow.
+> OUTPUTLOCATION = "my-results.csv"
 > ```
 >
 > 
@@ -102,7 +110,7 @@ Single block mode must have a location to either a directory of .json files, or 
 > ```bash
 > mlflow.py run-flow [project-name] [flow-name]
 > ```
-> 
+>
 > ##### Usage
 >
 > ```bash
