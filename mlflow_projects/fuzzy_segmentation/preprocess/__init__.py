@@ -5,5 +5,5 @@ BLOCK_ORDER = ["sub_proccess_a", "sub_proccess_b"] # The order the subblocks are
 
 
 # Entry point for a block
-def start(input_data=None):
-    # TAG
+def start(input_data=None, settings={}):
+    print(settings)

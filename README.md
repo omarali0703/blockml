@@ -9,7 +9,7 @@ ML flow builder to create and edit ml flows in python. Run custom scripts using 
 
 > You can create either a blank project or a project with some blocks already pre-generated for specific machine learning flows e.g. tagging, supervised-learning etc.
 >
-### To create a new project:
+### To create a new project: 🧠
 >
 > ```bash
 > mlflow.py create [project] [project_type]
@@ -17,38 +17,46 @@ ML flow builder to create and edit ml flows in python. Run custom scripts using 
 >
 #### Example: 
 
->
+> ##### Usage
+> 
 > ```bash
 > mlflow.py create My_SVM_Classifier blank
 > ```
 
 
 
-### Adding Custom Block:
+### Adding Custom Block: 🧱
 
 > All projects are different, machine learning flows are changing all the time, as such, feel free to delete or add custom blocks in the order of your choosing
 
 #### Example:
 
+> ##### Usage
+> 
 > ```bash
 > mlflow.py add [project] [new_block_name]
 > ```
 
 
 
-## Executing your project 
+## Executing your project ⌛️
 
 > You may run your project in one of two ways: `run-all` and `single-block` mode. Run-all will run the entire project block-by-block in the order specified in the `__init__.py` file. Single-block mode allows you to run a single block at a time to better debug your model step-by-step.
 ### Running the whole project
+> ##### Usage
+> 
 > ```bash
 > mlflow.py run [project-name]
 > ```
 ### Running a single block
+
+> ##### Usage
+> 
 > ```bash
 > mlflow.py run [project-name] [block-name] [input-data-location]
 > ```
 
-Single block mode must have a location to either a directory of .json files, or a single .json file.
+Single block mode must have a location to either a directory of .json files, or a single.json file.
 
 > ```python
 >example_data = {
@@ -59,4 +67,17 @@ Single block mode must have a location to either a directory of .json files, or 
 >  }
 >  ```
 > 
+
+### Block Settings
+
+> Block settings can be specified via the command line when running in single-block mode or programmatically when running the entire flow.
+>
+> #### Example Settings Specification in Single-Block Mode
+>
+> ##### Usage
+>
+> ```
+> mlflow.py run [project-name] [block-name] [input-data-location] [settings]
+> ```
+>
 > 

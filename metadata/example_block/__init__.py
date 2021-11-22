@@ -5,5 +5,5 @@ BLOCK_ORDER = ["sub_proccess_a", "sub_proccess_b"]
 
 
 # Entry point for a block
-def start(input_data=None):
+def start(input_data=None, settings={}):
     pass

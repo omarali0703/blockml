@@ -5,5 +5,5 @@ BLOCK_ORDER = ["block_matlab_fuzzy_trainer",]
 
 
 # Entry point for a block
-def start(input_data=None):
+def start(input_data=None, settings={}
     print('Train block is running.')
