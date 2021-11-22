@@ -121,12 +121,10 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
                 print(
                     f"{bcolors.OKGREEN} Data in flow...\nLast inputted data: {input_data}\nLast outputted data: {output_data},")
                 input_data = output_data
-
                 if output_data == None:
                     sys.exit(
                         f"{bcolors.WARNING}please make sure that block, {block} has output data returned.")
                 print(f"{bcolors.OKCYAN} Block, {block} has finished.")
-
             print(f"{bcolors.OKCYAN} Flow, {flow_to_run} has finished successfully.")
         else:
             sys.exit("Block doesn't exist.")
