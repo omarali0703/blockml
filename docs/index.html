@@ -1,0 +1,102 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="github.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <h1 id="mlflow-buggy-as-hell-">MLFlow (Buggy-as-Hell)</h1>
+    <ol>
+        <li>Non-intrusive framework to run custom scripts in a clear and succinct order</li>
+    </ol>
+    <p>ML flow builder to create and edit ml flows in python. Run custom scripts using simple input/outputs
+        &#39;blocks&#39; defined in python</p>
+    <h2 id="creating-a-new-project-">Creating a New Project 🚀</h2>
+    <blockquote>
+        <p>You can create either a blank project or a project with some blocks already pre-generated for specific
+            machine learning flows e.g. tagging, supervised-learning etc.</p>
+        <h3 id="to-create-a-new-project-">To create a new project: 🧠</h3>
+        <pre><code class="lang-bash"><span class="hljs-selector-tag">mlflow</span><span class="hljs-selector-class">.py</span> <span class="hljs-selector-tag">create</span> <span class="hljs-selector-attr">[project]</span> <span class="hljs-selector-attr">[project_type]</span>
+</code></pre>
+        <h4 id="example-">Example:</h4>
+        <h5 id="usage">Usage</h5>
+        <pre><code class="lang-bash">mlflow<span class="hljs-selector-class">.py</span> create My_SVM_Classifier blank
+</code></pre>
+    </blockquote>
+    <h3 id="adding-custom-block-">Adding Custom Block: 🧱</h3>
+    <blockquote>
+        <p>All projects are different, machine learning flows are changing all the time, as such, feel free to delete or
+            add custom blocks in the order of your choosing</p>
+    </blockquote>
+    <h4 id="example-">Example:</h4>
+    <blockquote>
+        <h5 id="usage">Usage</h5>
+        <pre><code class="lang-bash"><span class="hljs-selector-tag">mlflow</span><span class="hljs-selector-class">.py</span> <span class="hljs-selector-tag">add</span> <span class="hljs-selector-attr">[project]</span> <span class="hljs-selector-attr">[new_block_name]</span>
+</code></pre>
+    </blockquote>
+    <h2 id="executing-your-project-">Executing your project ⌛️</h2>
+    <blockquote>
+        <p>You may run your project in one of two ways: <code>run-all</code> and <code>single-block</code> mode. Run-all
+            will run the entire project block-by-block in the order specified in the <code>__init__.py</code> file.
+            Single-block mode allows you to run a single block at a time to better debug your model step-by-step.</p>
+        <h3 id="running-the-whole-project">Running the whole project</h3>
+        <h5 id="usage">Usage</h5>
+        <pre><code class="lang-bash">mlflow.py <span class="hljs-built_in">run</span> [project-<span class="hljs-built_in">name</span>]
+</code></pre>
+        <h3 id="running-a-single-block">Running a single block</h3>
+        <h5 id="usage">Usage</h5>
+        <pre><code class="lang-bash"><span class="hljs-selector-tag">mlflow</span><span class="hljs-selector-class">.py</span> <span class="hljs-selector-tag">run</span> <span class="hljs-selector-attr">[project-name]</span> <span class="hljs-selector-attr">[block-name]</span> <span class="hljs-selector-attr">[input-data-location]</span>
+</code></pre>
+    </blockquote>
+    <p>Single block mode must have a location to either a directory of .json files, or a single.json file.</p>
+    <blockquote>
+        <pre><code class="lang-python">example_data = {
+file_name_1:[<span class="hljs-keyword">file</span>-<span class="hljs-keyword">data</span>-<span class="hljs-number">1</span>],
+file_name_2:[<span class="hljs-keyword">file</span>-<span class="hljs-keyword">data</span>-<span class="hljs-number">2</span>],
+         ...
+ file_name_n:[<span class="hljs-keyword">file</span>-<span class="hljs-keyword">data</span>-n]
+ }
+</code></pre>
+    </blockquote>
+    <h3 id="block-settings">Block Settings</h3>
+    <blockquote>
+        <p>Block settings can be specified via the command line when running in single-block mode or programmatically
+            when running the entire flow.</p>
+        <h4 id="example-settings-specification-in-single-block-mode">Example Settings Specification in Single-Block Mode
+        </h4>
+        <h5 id="usage">Usage</h5>
+        <pre><code><span class="hljs-selector-tag">mlflow</span><span class="hljs-selector-class">.py</span> <span class="hljs-selector-tag">run</span> <span class="hljs-selector-attr">[project-name]</span> <span class="hljs-selector-attr">[block-name]</span> <span class="hljs-selector-attr">[input-data-location]</span> <span class="hljs-selector-attr">[settings]</span>
+</code></pre>
+    </blockquote>
+    <h2 id="flow-creation-">Flow Creation 🛠</h2>
+    <blockquote>
+        <p>For more complex proceedures within your model, you should have a look the <code>flows.ini</code> file! Flows
+            allow you to segment your model into standalone pieces that can be run independently to others. Consisting
+            souly of a list of blocks, flows can be defined by specifying block orders, loops and input settings for
+            each block. You can then run the flow in a far cleaner fashion in the command-line. Multiple flows for the
+            same model can also be defined in this file. The order in which the blocks are specified in the flows.ini
+            file will override the order specified in the <strong>init</strong>.py file for that project.</p>
+        <h5 id="example-flows-ini-file">Example flows.ini File</h5>
+        <pre><code class="lang-ini"><span class="hljs-section">[example-flow]</span>
+<span class="hljs-comment">; OVERRIDE for dependencies should this particular flow want/need its own set of dependencies that are</span>
+<span class="hljs-comment">; separate from other flows (Preferable for neat and tidy house-keeping)</span>
+<span class="hljs-attr">DEPENDENCIES</span>=<span class="hljs-string">"flow_dependencies"</span>
+
+<span class="hljs-comment">; Specify the order that blocks are run (Not including any loops) using a csv-style format.</span>
+<span class="hljs-attr">BLOCKORDER</span> = <span class="hljs-string">"block-1"</span>,<span class="hljs-string">"block-2"</span>,<span class="hljs-string">"block-3"</span>
+
+<span class="hljs-comment">; Specify the output file location for the results of the flow.</span>
+<span class="hljs-attr">OUTPUTLOCATION</span> = <span class="hljs-string">"my-results.csv"</span>
+</code></pre>
+        <h5 id="running-the-flows-ini-file">Running the flows.ini file</h5>
+        <pre><code class="lang-bash">mlflow.py <span class="hljs-built_in">run</span>-flow [project-<span class="hljs-built_in">name</span>] [flow-<span class="hljs-built_in">name</span>]
+</code></pre>
+        <h5 id="usage">Usage</h5>
+        <pre><code class="lang-bash">mlflow.py <span class="hljs-built_in">run</span>-flow <span class="hljs-keyword">my</span>-project flow_1
+</code></pre>
+    </blockquote>
+
+</body>
+
+</html>
