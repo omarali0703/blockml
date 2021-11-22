@@ -86,12 +86,26 @@ Single block mode must have a location to either a directory of .json files, or 
 
 ## Flow Creation 🛠
 
-> For more complex flows within your model, you should have a look the `flows.config` file! Flows can be defined by specifying block orders, loops and input settings for each block. You can then run the flow in a far cleaner fashion in the command-line.
+> For more complex flows within your model, you should have a look the `flows.ini` file! Flows can be defined by specifying block orders, loops and input settings for each block. You can then run the flow in a far cleaner fashion in the command-line. Multiple flows for the same model can also be defined in this file. The order in which the blocks are specified in the flows.ini file will override the order specified in the __init__.py file for that project.
 >
-> ```config
-> // flows.config
+> ##### Example flows.ini File
+>
+> ```ini
 > [flow_1]
 > 
 > ```
 >
 > 
+>
+> ##### Running the flows.ini file
+>
+> ```bash
+> mlflow.py run-flow [project-name] [flow-name]
+> ```
+> 
+> ##### Usage
+>
+> ```bash
+> mlflow.py run-flow my-project flow_1
+> ```
+
