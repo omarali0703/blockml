@@ -1,4 +1,4 @@
-# MLFlow
+# MLFlow (Buggy-as-Hell)
 1. Non-intrusive framework to run custom scripts in a clear and succinct order
 
 ML flow builder to create and edit ml flows in python. Run custom scripts using simple input/outputs 'blocks' defined in python
@@ -86,12 +86,12 @@ Single block mode must have a location to either a directory of .json files, or 
 
 ## Flow Creation 🛠
 
-> For more complex flows within your model, you should have a look the `flows.ini` file! Flows can be defined by specifying block orders, loops and input settings for each block. You can then run the flow in a far cleaner fashion in the command-line. Multiple flows for the same model can also be defined in this file. The order in which the blocks are specified in the flows.ini file will override the order specified in the __init__.py file for that project.
+> For more complex proceedures within your model, you should have a look the `flows.ini` file! Flows allow you to segment your model into standalone pieces that can be run independently to others. Consisting souly of a list of blocks, flows can be defined by specifying block orders, loops and input settings for each block. You can then run the flow in a far cleaner fashion in the command-line. Multiple flows for the same model can also be defined in this file. The order in which the blocks are specified in the flows.ini file will override the order specified in the __init__.py file for that project.
 >
 > ##### Example flows.ini File
 >
 > ```ini
-> [flow_1]
+> [example-flow]
 > ; OVERRIDE for dependencies should this particular flow want/need its own set of dependencies that are
 > ; separate from other flows (Preferable for neat and tidy house-keeping)
 > DEPENDENCIES="flow_dependencies"
