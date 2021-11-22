@@ -109,13 +109,15 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
             dependencies_location = flows_config[flow_to_run][
                 'DEPENDENCIES'] if "DEPENDENCIES" in flows_config[flow_to_run] else dependencies_location
             block_order = flows_config[flow_to_run]['BLOCKORDER'].split(',')
+            loopable = True if flows_config[flow_to_run]['LOOP'] in ('on','yes','true') else False
             input_data = None
             output_data = None
+            iterable = False #TODO support for iterable models. (Quite important)
             for block in block_order:
                 print(f"{bcolors.OKCYAN} Block, {block} has started...")
                 current_block = __import__(
                     'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
-                output_data = current_block.start(input_data=input_data)
+                output_data, loop_breaker = current_block.start(input_data=input_data, None)
                 print(
                     f"{bcolors.OKGREEN} Data in flow...\nLast inputted data: {input_data}\nLast outputted data: {output_data},")
                 input_data = output_data
@@ -124,6 +126,7 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
                     sys.exit(
                         f"{bcolors.WARNING}please make sure that block, {block} has output data returned.")
                 print(f"{bcolors.OKCYAN} Block, {block} has finished.")
+
             print(f"{bcolors.OKCYAN} Flow, {flow_to_run} has finished successfully.")
         else:
             sys.exit("Block doesn't exist.")
