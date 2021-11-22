@@ -3,14 +3,25 @@ import sys
 import os
 import shutil
 import mlflow_projects
-
+import configparser
 args = sys.argv
 run_type = "all"
 project_name = "mlflowproject"
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 accepted_l1_commands = [
     "create",
     "run",
-    "add"
+    "add",
+    "run-flow"
 ]
 accepted_l2_commands = [
     "pre",
@@ -25,7 +36,6 @@ accepted_l2_commands = [
     "block"
 
 ]
-
 PROJECT_STRUCTURES = {
     "blank": ['preprocess', 'training', 'run', 'results'],
     "tagging": ['preprocess', 'tagging', 'training', 'run', 'results']
@@ -34,7 +44,7 @@ PROJECT_STRUCTURES = {
 # input_data_location is the location of the input data for a single block when running in single block mode.
 
 
-def run_project(project_to_run='untitled', block_to_run_from=None, input_data_location=None):
+def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=None, input_data_location=None):
     try:
         project_module = __import__('mlflow_projects.' +
                                     str(project_to_run), fromlist=[''])
@@ -50,23 +60,25 @@ def run_project(project_to_run='untitled', block_to_run_from=None, input_data_lo
                 list_path = os.listdir(input_data_dir)
                 for file in list_path:
                     input_data_file_name = file.split('.')[0]
-                    input_data_file_data = open(os.path.join(input_data_dir,file),'r')
+                    input_data_file_data = open(
+                        os.path.join(input_data_dir, file), 'r')
                     input_data_contents = input_data_file_data.read()
                     batch_input_data[file] = input_data_contents
                     input_data_file_data.close()
                 input_data = batch_input_data
             else:
-                input_data = open(input_data_dir,"r")
-                input_data_file_name = input_data_dir.split('/')[-1].split('.')[0]
+                input_data = open(input_data_dir, "r")
+                input_data_file_name = input_data_dir.split(
+                    '/')[-1].split('.')[0]
                 input_file_data = input_data.read()
                 input_data.close()
-                input_data = {input_data_file_name:input_file_data}
+                input_data = {input_data_file_name: input_file_data}
                 # Array with single element so batch and single input_data's can be processed the same way.
             print(f"Running {block_to_run_from} in single-block mode...")
             current_block = __import__(
                 'mlflow_projects.' + str(project_to_run) + '.' + block_to_run_from, fromlist=[''])
             current_block.start(input_data=input_data)
-        elif block_to_run_from == None:
+        elif block_to_run_from == None and flow_to_run == None:
             input_data = None
             output_data = None
             for block in blocks_in_flow:
@@ -77,23 +89,32 @@ def run_project(project_to_run='untitled', block_to_run_from=None, input_data_lo
                     sys.exit(
                         f"please make sure that block, {block} has output data returned.")
                 input_data = output_data  # Set the next inputdata to the last output
+        elif flow_to_run != None:
+            input_data_dir = f"mlflow_projects/{project_to_run}/flows.ini"
+            flows_config = configparser.ConfigParser()
+            flows_config.read(input_data_dir)
+            flows = flows_config.sections
+            if flow_to_run not in flows:
+                sys.exit (f"{bcolors.FAIL}Flow to run is not specified in flows.ini")
+            for key in flows[flow_to_run]:
+                pass
         else:
             sys.exit("Block doesn't exist.")
     except ModuleNotFoundError as error:
         print(error)
         sys.exit(
-            f"Project {project_to_run} not found. Please run 'mlflow.py create {project_to_run}' to create it.")
+            f"{bcolors.FAIL}Project {project_to_run} Has thrown errors. These are most likely documented above.")
 
 
 def create_project(name=project_name, location="", project_type="blank"):
     print("Creating new MLFlow project...")
     if location == "":
-        sys.exit('Please specify a location for the project.')
+        sys.exit(f'{bcolors.FAIL}Please specify a location for the project.')
     if project_type == "" or project_type == None:
         project_type = "blank"
 
     path = os.path.join(location, name)
-    print("Cloning blank project template...")
+    print(f"{bcolors.OKCYAN}Cloning blank project template...")
     try:
         shutil.copytree(f"metadata/example_project", path)
 
@@ -104,7 +125,7 @@ def create_project(name=project_name, location="", project_type="blank"):
         sys.exit(error)
 
     print(
-        f"Project, {name} created at {location}. Visit the github source to get started!")
+        f"{bcolors.OKCYAN}Project, {name} created at {location}. Visit the github source to get started!")
 
 
 def create_new_block(project_name=None, name='unamed_block', ):
@@ -133,7 +154,7 @@ if len(args) > 1:
                     sys.exit(
                         f"Project type: {project_type} is not a valid project type to generate")
             create_project(project_name, location, project_type)
-        if run_type == "add":
+        elif run_type == "add":
             new_block_name = args[3]
             create_new_block(project_name, new_block_name)
         elif run_type == "run":
@@ -141,12 +162,19 @@ if len(args) > 1:
             if len(args) > 3:
                 block_to_run_from = args[3]
                 input_data_location = args[4]
-                run_project(project_name, block_to_run_from, input_data_location)
+                run_project(project_name, block_to_run_from, None,
+                            input_data_location)
             else:
                 run_project(project_name)
             print('Project finished running.')
+        elif run_type == "run-flow":
+            project_name = f"{args[2]}"
+            if len(args) > 3:
+                flow_name =
+                run_project(project_name, block_to_run_from, None, None)
+            else:
+                sys.exit(f'{bcolors.WARNING}Please specify a flow to run on this project.')
     elif args[2] not in accepted_l1_commands or args[2] not in accepted_l2_commands:
-        sys.exit(f"command {args[1]} {args[2]}  does not exist.")
-
+        sys.exit(f"{bcolors.WARNING}command {args[1]} {args[2]}  does not exist.")
 else:
-    sys.exit("Please specify a project name")
+    sys.exit(f"{bcolor.WARNING}Please specify a project name")
