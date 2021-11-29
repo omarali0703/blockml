@@ -25,7 +25,7 @@ ML flow builder to create and edit ml flows in python. Run custom scripts using 
 
 
 
-### Adding Custom Block: 🧱
+### Adding Custom Blocks: 🧱
 
 > All projects are different, machine learning flows are changing all the time, as such, feel free to delete or add custom blocks in the order of your choosing
 
@@ -36,6 +36,35 @@ ML flow builder to create and edit ml flows in python. Run custom scripts using 
 > ```bash
 > mlflow.py add [project] [new_block_name]
 > ```
+
+### Adding Custom Sub-Blocks: 🧱
+
+Sub-blocks allow your main-flow block's logic to have their own organised directory. Each subblock should have an \_\_init\_\_.py of its own to serve as the entry point. The rest of the sub-block's logic can be referenced separately in their own .py files or within the init file itself (either-way is fine).
+
+#### Example sub-block File-Structure:
+
+```
+[project-name]
+  ├── [block-1]
+  |		├── __init__.py
+  |		├── block-1-logic.py
+  |		└── [sub-block-1]
+  |		|		├── __init__.py
+  | 	|		└── sub-block-1-logic.py
+  ├── [block-2]
+  |		├── __init__.py
+  |		├── block-2-logic.py
+  └── [block-3]
+  |		├── block-3-logic.py
+  |		├── [sub-block-1]
+  |		|		├── __init__.py
+  | 	|		└── sub-block-1-logic.py
+  |		├── [sub-block-2]
+  |		|		├── __init__.py
+  | 	|		└── sub-block-2-logic.py
+  |		└── __init__.py
+	└── __init__.py
+```
 
 
 
