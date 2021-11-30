@@ -81,7 +81,8 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
             print(f"Running {block_to_run_from} in single-block mode...")
             current_block = __import__(
                 'mlflow_projects.' + str(project_to_run) + '.' + block_to_run_from, fromlist=[''])
-            current_block.start(input_data, block_settings)
+            output_data, loop_breaker = current_block.start(input_data, block_settings)
+
         elif block_to_run_from == None and flow_to_run == None:
             input_data = None
             output_data = None
@@ -89,7 +90,7 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
                 print(f"{bcolors.OKCYAN} Block, {block} has started...")
                 current_block = __import__(
                     'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
-                output_data = current_block.start(input_data=input_data)
+                output_data, loop_breaker = current_block.start(input_data=input_data)
                 if output_data == None:
                     sys.exit(
                         f"please make sure that block, {block} has output data returned.")
