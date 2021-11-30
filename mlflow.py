@@ -47,8 +47,9 @@ PROJECT_STRUCTURES = {
 # input_data_location is the location of the input data for a single block when running in single block mode.
 
 
-def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=None, input_data_location=None):
-    try: # Will always cancel the entire model if there's an error. We need to micro-manage issues that may occur. We can skip some fails and continue the model etc.
+def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=None, input_data_location=None, block_settings=None):
+    print(project_to_run, flow_to_run, block_to_run_from, input_data_location)
+    try:  # Will always cancel the entire model if there's an error. We need to micro-manage issues that may occur. We can skip some fails and continue the model etc.
         project_module = __import__('mlflow_projects.' +
                                     str(project_to_run), fromlist=[''])
         blocks_in_flow = project_module.FLOW_ORDER
@@ -80,7 +81,7 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
             print(f"Running {block_to_run_from} in single-block mode...")
             current_block = __import__(
                 'mlflow_projects.' + str(project_to_run) + '.' + block_to_run_from, fromlist=[''])
-            current_block.start(input_data=input_data)
+            current_block.start(input_data, block_settings)
         elif block_to_run_from == None and flow_to_run == None:
             input_data = None
             output_data = None
@@ -95,7 +96,7 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
                 print(f"{bcolors.OKCYAN} Block, {block} has finished.")
                 input_data = output_data  # Set the next inputdata to the last output
             print(f"{bcolors.OKCYAN} Model has finished successfully.")
-        elif flow_to_run != None:
+        elif flow_to_run != None and input_data_location == None:
             print(f"{bcolors.OKCYAN} Flow, {flow_to_run} has started...")
             input_data_dir = f"mlflow_projects/{project_to_run}/flows.ini"
             flows_config = configparser.ConfigParser()
@@ -109,15 +110,18 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
             dependencies_location = flows_config[flow_to_run][
                 'DEPENDENCIES'] if "DEPENDENCIES" in flows_config[flow_to_run] else dependencies_location
             block_order = flows_config[flow_to_run]['BLOCKORDER'].split(',')
-            loopable = True if flows_config[flow_to_run]['LOOP'] in ('on','yes','true') else False
+            loopable = True if flows_config[flow_to_run]['LOOP'] in (
+                'on', 'yes', 'true') else False
             input_data = None
             output_data = None
-            iterable = False #TODO support for iterable models. (Quite important)
+            # TODO support for iterable models. (Quite important)
+            iterable = False
             for block in block_order:
                 print(f"{bcolors.OKCYAN} Block, {block} has started...")
                 current_block = __import__(
                     'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
-                output_data, loop_breaker = current_block.start(input_data=input_data, None)
+                output_data, loop_breaker = current_block.start(
+                    input_data, None)
                 print(
                     f"{bcolors.OKGREEN} Data in flow...\nLast inputted data: {input_data}\nLast outputted data: {output_data},")
                 input_data = output_data
@@ -185,8 +189,11 @@ if len(args) > 1:
             if len(args) > 3:
                 block_to_run_from = args[3]
                 input_data_location = args[4]
-                run_project(project_name, block_to_run_from, None,
-                            input_data_location)
+                settings = None
+                if len(args) > 4:
+                    settings = args[4]
+                run_project(project_name, None, block_to_run_from,
+                            input_data_location, settings)
             else:
                 run_project(project_name)
             print(f'{bcolors.OKCYAN}Project finished running.')
