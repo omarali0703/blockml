@@ -48,7 +48,7 @@ PROJECT_STRUCTURES = {
 
 
 def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=None, input_data_location=None):
-    try:
+    try: # Will always cancel the entire model if there's an error. We need to micro-manage issues that may occur. We can skip some fails and continue the model etc.
         project_module = __import__('mlflow_projects.' +
                                     str(project_to_run), fromlist=[''])
         blocks_in_flow = project_module.FLOW_ORDER
