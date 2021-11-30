@@ -191,7 +191,7 @@ if len(args) > 1:
                 input_data_location = args[4]
                 settings = None
                 if len(args) > 4:
-                    settings = args[4]
+                    settings = args[5]
                 run_project(project_name, None, block_to_run_from,
                             input_data_location, settings)
             else:
