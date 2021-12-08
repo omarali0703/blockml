@@ -3,3 +3,4 @@ legacy_models
 .DS_Store
 mlflow_projects
 mlflow-env.code-workspace
+*.DS_Store
