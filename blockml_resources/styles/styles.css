@@ -1,0 +1,26 @@
+.logo-banner {
+    padding: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 24pt;
+    color:grey
+
+}
+.toolbar-buttons {
+    display: flex;
+    box-shadow: 0 4px 9px -2px gray;
+    background-color: #EEEEEE;
+
+}
+.toolbar-btn {
+    padding: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    color: gray;
+}
+.toolbar-submenu {
+    display: flex;
+}
+
+body {
+    margin: 0;
+}
