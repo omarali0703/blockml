@@ -1,4 +1,5 @@
 import io
+import json
 import sys
 import os
 import shutil
@@ -7,8 +8,6 @@ import configparser
 args = sys.argv
 run_type = "all"
 project_name = "mlflowproject"
-
-
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -19,8 +18,6 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
-
-
 accepted_l1_commands = [
     "create",
     "run",
@@ -44,9 +41,8 @@ PROJECT_STRUCTURES = {
     "blank": ['preprocess', 'training', 'run', 'results'],
     "tagging": ['preprocess', 'tagging', 'training', 'run', 'results']
 }
+
 # input_data_location is the location of the input data for a single block when running in single block mode.
-
-
 def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=None, input_data_location=None, block_settings=None):
     print(project_to_run, flow_to_run, block_to_run_from, input_data_location)
     try:  # Will always cancel the entire model if there's an error. We need to micro-manage issues that may occur. We can skip some fails and continue the model etc.
@@ -78,10 +74,14 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
                 input_data.close()
                 input_data = {input_data_file_name: input_file_data}
                 # Array with single element so batch and single input_data's can be processed the same way.
-            print(
-                f"{bcolors.OKCYAN}Running {block_to_run_from} in single-block mode...")
+            
             current_block = __import__(
                 'mlflow_projects.' + str(project_to_run) + '.' + block_to_run_from, fromlist=[''])
+            block_settings = json.loads(block_settings)
+            block_settings['root'] = f"mlflow_projects/{project_to_run}/{dependencies_location}"
+            block_settings['input_data_location'] = input_data_dir
+            print(
+                f"{bcolors.OKCYAN}Running {block_to_run_from} in single-block mode...\nSettings: {block_settings}")
             output_data, loop_breaker = current_block.start(
                 input_data, block_settings)
             print(f"{bcolors.OKGREEN} {output_data}")
