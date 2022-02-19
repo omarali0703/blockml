@@ -124,10 +124,18 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
                 print(f"{bcolors.OKCYAN} Block, {block} has started...")
                 current_block = __import__(
                     'mlflow_projects.' + str(project_to_run) + '.' + block, fromlist=[''])
+                if block_settings:
+                    if not type (block_settings) is dict:
+                        block_settings = json.loads(block_settings)
+                    block_settings['root'] = f"mlflow_projects/{project_to_run}/{dependencies_location}"
+                    block_settings['input_data_location'] = input_data_dir
+                else:
+                    block_settings={}
+
                 output_data, loop_breaker = current_block.start(
-                    input_data, None)
+                    input_data, block_settings)
                 print(
-                    f"{bcolors.OKGREEN} Data in flow...\nLast inputted data: {input_data}\nLast outputted data: {output_data},")
+                    f"{bcolors.OKGREEN} Data in flow...\nLast inputted data: {type(input_data)}\nLast outputted data: {type(output_data)},")
                 input_data = output_data
                 if output_data == None:
                     sys.exit(
@@ -205,7 +213,10 @@ if len(args) > 1:
             project_name = f"{args[2]}"
             if len(args) > 3:
                 flow_name = args[3]
-                run_project(project_name, flow_name, None, None)
+                settings = None
+                if len(args) > 5:
+                    settings = args[5]
+                run_project(project_name, flow_name, None, None, settings)
             else:
                 sys.exit(
                     f'{bcolors.WARNING}Please specify a flow to run on this project.')
