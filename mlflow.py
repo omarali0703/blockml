@@ -142,6 +142,8 @@ def run_project(project_to_run='untitled', flow_to_run=None, block_to_run_from=N
                         f"{bcolors.WARNING}please make sure that block, {block} has output data returned.")
                 print(f"{bcolors.OKCYAN} Block, {block} has finished.")
             print(f"{bcolors.OKCYAN} Flow, {flow_to_run} has finished successfully.")
+            script = "osascript -e 'tell application \"Messages\" to send \"FuzzySeg has finished running.\" to buddy \"07948171108\"'"
+            os.system(script)
         else:
             sys.exit("Block doesn't exist.")
     except ModuleNotFoundError as error:
