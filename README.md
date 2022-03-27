@@ -1,7 +1,9 @@
-# MLFlow (Buggy-as-Hell)
+# BlockML (Buggy-as-Hell)
 1. Non-intrusive framework to run custom scripts in a clear and succinct order
 
-ML flow builder to create and edit ml flows in python. Run custom scripts using simple input/outputs 'blocks' defined in python
+Whilst some of the files are called MLFlow this isn't related to the actual MLFlow. The term is used literally as the ***flow*** of ML process defined and designed in this framework.
+
+BlockML builder to create and edit ml flows in python. Run custom scripts using simple input/outputs 'blocks' defined in python
 
 
 
