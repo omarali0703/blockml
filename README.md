@@ -1,4 +1,5 @@
-# BlockML (Buggy-as-Hell)
+# BlockML (Buggy-as-Heck)
+
 1. Non-intrusive framework to run custom scripts in a clear and succinct order
 
 Whilst some of the files are called MLFlow this isn't related to the actual MLFlow. The term is used literally as the ***flow*** of ML process defined and designed in this framework.
