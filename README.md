@@ -1,6 +1,7 @@
 # BlockML (Buggy-as-Heck)
 
 1. Non-intrusive framework to run custom scripts in a clear and succinct order
+2. This project was developed by myself for my PhD project of Fuzzy Text segmentation. The aim of the project was simply to provide a block-based system to improve the overall development of my PhD project.
 
 Whilst some of the files are called MLFlow this isn't related to the actual MLFlow. The term is used literally as the ***flow*** of ML process defined and designed in this framework.
 
